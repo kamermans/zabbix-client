@@ -1,8 +1,15 @@
 {
     "name": "kamermans/zabbix-client",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Steve Kamerman",
+            "homepage": "https://github.com/kamermans"
+        }
+    ],
     "require" : {
         "php" : ">=5.4.0",
-        "guzzlehttp/guzzle" : "~5",
         "graze/guzzle-jsonrpc": ">=2.1"
     },
     "autoload" : {
