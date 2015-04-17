@@ -1,0 +1,13 @@
+{
+    "name": "kamermans/zabbix-client",
+    "require" : {
+        "php" : ">=5.4.0",
+        "guzzlehttp/guzzle" : "~5",
+        "graze/guzzle-jsonrpc": ">=2.1"
+    },
+    "autoload" : {
+        "psr-4" : {
+            "kamermans\\ZabbixClient\\" : "src/"
+        }
+    }
+}
