@@ -46,6 +46,10 @@ class ApiResponse implements \ArrayAccess, \Iterator {
         exit(2);
     }
 
+    public function isEmpty() {
+        return !empty($this->result);
+    }
+
     /* Start ArrayAccess */
     public function offsetSet($offset, $value) {
         throw new Exception("API Responses are read-only");
