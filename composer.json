@@ -10,7 +10,7 @@
     ],
     "require" : {
         "php" : ">=5.4.0",
-        "graze/guzzle-jsonrpc": ">=2.1"
+        "graze/guzzle-jsonrpc": "^2.1"
     },
     "autoload" : {
         "psr-4" : {
