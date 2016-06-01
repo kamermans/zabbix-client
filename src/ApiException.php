@@ -8,7 +8,8 @@ class ApiException extends Exception {
 
     public function __construct(ApiResponse $response, $previous=null) {
         $this->response = $response;
-        $message = "{$response['message']} {$response['data']} ({$response['code']})";
+        $rpcError = $response->getResult();
+        $message = "{$rpcError->getRpcErrorMessage()} {$rpcError->getRpcErrorData()} ({$rpcError->getRpcErrorCode()})";
         parent::__construct($message, $response['code'], $previous);
     }
 

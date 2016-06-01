@@ -2,17 +2,17 @@
 
 namespace kamermans\ZabbixClient;
 
-use GuzzleHttp\Message\ResponseInterface as HttpResponseInterface;
+use Graze\GuzzleHttp\JsonRpc\json_decode;
+use Graze\GuzzleHttp\JsonRpc\Message\Response as HttpResponse;
 
 class ApiResponse implements \ArrayAccess, \Iterator {
 
-    private $raw_response;
     private $jsonrpc;
     private $result;
     private $id;
     private $is_error = false;
 
-    public function __construct(HttpResponseInterface $response) {
+    public function __construct(HttpResponse $response) {
         $this->parseResponse($response);
 
         if ($this->isError()) {
@@ -64,7 +64,20 @@ class ApiResponse implements \ArrayAccess, \Iterator {
     }
 
     public function offsetGet($offset) {
-        return $this->offsetExists($offset)? $this->result[$offset]: null;
+        if ($this->is_error) {
+            switch ($offset) {
+                case 'message':
+                    return $this->result->getRpcErrorMessage();
+                    break;
+                case 'data':
+                    return $this->result->getRpcErrorData();
+                    break;
+                case 'code':
+                    return $this->result->getRpcErrorCode();
+                    break;
+            }
+        }
+        return $this->offsetExists($offset) ? $this->result[$offset] : null;
     }
     /* End ArrayAccess */
 
@@ -95,18 +108,16 @@ class ApiResponse implements \ArrayAccess, \Iterator {
     }
     /* End Iterator */
 
-    private function parseResponse(HttpResponseInterface $response) {
+    private function parseResponse(HttpResponse $response) {
         try {
-            $this->raw_response = $resp = $response->json();
-            $this->jsonrpc = $resp['jsonrpc'];
-            $this->id = $resp['id'];
-            if (array_key_exists('error', $resp)) {
-                $this->result = $resp['error'];
+            $this->jsonrpc = $response->getRpcVersion();
+            $this->id = $response->getRpcId();
+            if (null !== $response->getRpcErrorCode()) {
+                $this->result = $response;
                 $this->is_error = true;
             } else {
-                $this->result = $resp['result'];
+                $this->result = $response->getRpcResult();
             }
-
         } catch (\Exception $e) {
             throw new ApiException("Unable to parse response from Zabbix API", null, $e);
         }
