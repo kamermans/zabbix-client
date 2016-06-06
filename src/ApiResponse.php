@@ -41,6 +41,10 @@ class ApiResponse implements \ArrayAccess, \Iterator {
         echo "\n";
     }
 
+    public function length() {
+        return count($this->result);
+    }
+
     public function dd() {
         $this->dump();
         exit(2);
